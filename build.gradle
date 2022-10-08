@@ -1,0 +1,62 @@
+
+plugins {
+    id 'org.springframework.boot' version '2.7.3'
+    id 'io.spring.dependency-management' version '1.0.13.RELEASE'
+    id 'java'
+    id 'maven-publish'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url = uri('https://repo.maven.apache.org/maven2/')
+    }
+
+    maven {
+        url = uri('https://maven.vaadin.com/vaadin-prereleases/')
+    }
+
+    maven {
+        url = uri('https://maven.vaadin.com/vaadin-addons')
+    }
+}
+
+dependencies {
+    implementation 'com.vaadin:vaadin:23.2.0'
+    implementation 'com.vaadin:vaadin-spring-boot-starter:23.2.0'
+    implementation 'org.vaadin.artur.exampledata:exampledata:3.4.0'
+    implementation 'com.h2database:h2:2.1.214'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.7.3'
+    implementation 'org.springframework.boot:spring-boot-starter-validation:2.7.3'
+    implementation 'org.springframework.boot:spring-boot-starter-security:2.7.3'
+    implementation 'org.springframework.boot:spring-boot-devtools:2.7.3'
+    implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
+    implementation 'com.vaadin:vaadin-date-picker-flow:23.2.0'
+    implementation 'com.vaadin:vaadin-text-field-flow:23.2.0'
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.3'
+    testImplementation 'com.vaadin:vaadin-testbench:23.2.0'
+    testImplementation 'org.junit.vintage:junit-vintage-engine:5.9.0'
+    testImplementation 'io.github.bonigarcia:webdrivermanager:5.3.0'
+}
+
+group = 'com.neo.putra'
+version = '1.0-SNAPSHOT'
+description = 'Makmur Jaya CRM'
+java.sourceCompatibility = JavaVersion.VERSION_12
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+targetCompatibility = JavaVersion.VERSION_12
