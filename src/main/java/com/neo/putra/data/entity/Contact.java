@@ -5,7 +5,6 @@ import com.neo.putra.data.ContactType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.apache.commons.lang3.builder.HashCodeExclude;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -25,6 +24,7 @@ public class Contact extends AbstractEntity {
     private String email;
     private String telp;
     private String taxId;
+    private String nik;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     private Account account;

@@ -14,14 +14,14 @@ import javax.annotation.security.PermitAll;
 
 @Component
 @Scope("prototype")
-@Route(value = "customerPurchaseOrders", layout = MainLayout.class)
+@Route(value = "customer-purchase-orders", layout = MainLayout.class)
 @PageTitle("Customer Purchase Orders | PT. Makmur Jaya")
 @PermitAll
 public class CustomerPurchaseOrderView extends CustomerAbstractOrderView {
     final CrmService service;
     public CustomerPurchaseOrderView(final CrmService service) {
         super(service, "Purchase Orders",
-                s -> service.searchCustomerPurchaseOrders(s));
+                s -> service.findAllCustomerPurchaseOrders(s));
         this.service = service;
     }
 

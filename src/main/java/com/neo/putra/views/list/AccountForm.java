@@ -18,7 +18,7 @@ public class AccountForm extends AbstractForm<Account> {
         super(new BeanValidationBinder<>(Account.class));
         setClassName("account-form");
         add(contact, name, accountNumber, balance, createButtonsLayout());
-        contact.setItems(service.searchContacts(null));
+        contact.setItems(service.findAllContacts(null));
         contact.setItemLabelGenerator(c -> c.getName());
     }
 }

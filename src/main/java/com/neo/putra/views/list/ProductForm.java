@@ -1,7 +1,6 @@
 package com.neo.putra.views.list;
 
 import com.neo.putra.data.ContactType;
-import com.neo.putra.data.KeyValue;
 import com.neo.putra.data.Unit;
 import com.neo.putra.data.entity.Product;
 import com.neo.putra.data.entity.Contact;
@@ -26,7 +25,7 @@ public class ProductForm extends AbstractForm<Product>
         unit.setItems(Arrays.asList(Unit.TON, Unit.KG, Unit.SAK,
                 Unit.BKP5L, Unit.BKP2L, Unit.BKP1L, Unit.BKP500ML));
         add(name, brand, productCode, unit, supplier, createButtonsLayout());
-        supplier.setItems(service.searchContacts(Arrays.asList(
+        supplier.setItems(service.findAllContacts(Arrays.asList(
                 (root, query, cb) -> cb.equal(root.<ContactType>get("contactType"), ContactType.SUPPLIER))));
         supplier.setItemLabelGenerator(Contact::getName);
     }

@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 @Component
 @Scope("prototype")
-@Route(value = "supplierDeliveredOrders", layout = MainLayout.class)
+@Route(value = "supplier-delivered-orders", layout = MainLayout.class)
 @PageTitle("Supplier Delivered Orders | PT. Makmur Jaya")
 @PermitAll
 
@@ -35,7 +35,7 @@ public class SupplierDeliveredOrderView extends SupplierAbstractPurchaseOrderVie
                 filters -> {
                     filters.add(
                             (root, query, cb) -> cb.equal(root.<OrderState>get("orderState"), OrderState.DO));
-                    return service.searchSupplierPurchaseOrders(filters);
+                    return service.findAllSupplierPurchaseOrders(filters);
                 });
         this.service = service;
         disableAddition();

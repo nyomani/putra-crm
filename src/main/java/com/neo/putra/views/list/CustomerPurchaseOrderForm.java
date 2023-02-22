@@ -17,14 +17,14 @@ public class CustomerPurchaseOrderForm extends PurchaseOrderForm<CustomerPurchas
     private ComboBox<Contact> sales;
     public CustomerPurchaseOrderForm(final CrmService service) {
         super(new BeanValidationBinder<>(CustomerPurchaseOrder.class));
-        stock.setItems(service.findStocks());
+        stock.setItems(service.findAllStocks());
         stock.setItemLabelGenerator(item -> item.getStockId());
-        contact.setItems(service.searchContacts(
+        contact.setItems(service.findAllContacts(
                 Arrays.asList((root, query, criteriaBuilder) ->
                         criteriaBuilder.equal(root.<ContactType>get("contactType"), ContactType.CUSTOMER))));
         contact.setItemLabelGenerator(e -> e.getName());
 
-        sales.setItems(service.searchContacts(
+        sales.setItems(service.findAllContacts(
                 Arrays.asList((root, query, criteriaBuilder) ->
                         criteriaBuilder.equal(root.<ContactType>get("contactType"), ContactType.SALES))));
         sales.setItemLabelGenerator(e -> e.getName());

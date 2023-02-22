@@ -4,7 +4,6 @@ import com.neo.putra.data.entity.Product;
 import com.neo.putra.data.service.CrmService;
 import com.neo.putra.views.MainLayout;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.context.annotation.Scope;
@@ -23,7 +22,7 @@ public class ProductView extends AbstractListView<Product> {
         super("Products",
                 new Grid<>(Product.class),
                 new ProductForm(service),
-                (filters) -> service.searchProducts(filters));
+                (filters) -> service.findAllProducts(filters));
         this.service = service;
     }
 

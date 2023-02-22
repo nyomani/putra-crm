@@ -1,8 +1,6 @@
 package com.neo.putra.views.list;
 
 import com.neo.putra.data.ContactType;
-import com.neo.putra.data.KeyValue;
-import com.neo.putra.data.entity.Account;
 import com.neo.putra.data.entity.Contact;
 import com.neo.putra.data.service.CrmService;
 import com.neo.putra.views.MainLayout;
@@ -13,7 +11,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.security.PermitAll;
-import java.util.Arrays;
 
 @Component
 @Scope("prototype")
@@ -31,7 +28,7 @@ public class CustomerView extends AbstractListView<Contact> {
                     filters.add(
                             (root, query, cb) ->
                                     cb.equal(root.<ContactType>get("contactType"), ContactType.CUSTOMER));
-                    return service.searchContacts(filters);
+                    return service.findAllContacts(filters);
                 });
         this.service = service;
         addClassName("list-view");

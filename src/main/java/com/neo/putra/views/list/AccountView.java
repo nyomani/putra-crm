@@ -16,8 +16,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.security.PermitAll;
 
-import java.util.Arrays;
-
 import static com.neo.putra.data.query.AccountSpecifications.*;
 
 @Component
@@ -29,7 +27,7 @@ import static com.neo.putra.data.query.AccountSpecifications.*;
 public class AccountView extends AbstractListView<Account>
 {
     final CrmService service;
-    final ComboBox<ContactType> accountTypeFilter = new ComboBox<>("Account Type");
+    final ComboBox<ContactType> accountTypeFilter = new ComboBox<>("Account Relasi");
     final ComboBox<Contact> ownerFilter = new ComboBox<>("Account Owner");
     public AccountView(final CrmService service) {
         super("Account", new Grid<>(Account.class),
@@ -40,9 +38,8 @@ public class AccountView extends AbstractListView<Account>
         addFilter(new ColumnFilter<>(ownerFilter, ownerFilter::getValue, p -> hasContact(p)));
         accountTypeFilter.addValueChangeListener(v -> updateList());
         ownerFilter.addValueChangeListener(v -> updateList());
-        accountTypeFilter.setItems(Arrays.asList(ContactType.OWNER, ContactType.CUSTOMER, ContactType.SUPPLIER,
-                ContactType.EMPLOYEE));
-        ownerFilter.setItems(service.searchContacts(null));
+        accountTypeFilter.setItems(ContactType.values());
+        ownerFilter.setItems(service.findAllContacts(null));
         accountTypeFilter.setClearButtonVisible(true);
         ownerFilter.setClearButtonVisible(true);
         ownerFilter.setItemLabelGenerator(c -> c.getName());
@@ -53,8 +50,9 @@ public class AccountView extends AbstractListView<Account>
         grid.addClassNames("account-grid");
         grid.setSizeFull();
         grid.setColumns();
-        grid.addColumn(a -> a.getContact() == null ? "" : a.getContact().getName()).setHeader("Pemilik");
-        grid.addColumn(a -> a.getContact() == null ? "" : a.getContact().getContactType()).setHeader("Relasi");
+        grid.addColumn(a -> a.getContact().getName()).setHeader("Pemilik");
+        grid.addColumn(a -> a.getContact().getContactType()).setHeader("Relasi");
+        grid.addColumn(a -> a.getType()).setHeader("Type");
         grid.addColumn(a -> a.getName()).setHeader("Bank");
         grid.addColumn(a -> a.getAccountNumber()).setHeader("Account");
         grid.addColumn(a -> rupiah(a.getInitialBalance())).setHeader("Saldo Awal").setTextAlign(ColumnTextAlign.END);

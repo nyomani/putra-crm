@@ -29,7 +29,7 @@ public class MainLayout extends AppLayout {
     }
 
     private void createHeader() {
-        H1 logo = new H1("PT Makmur Jaya");
+        H1 logo = new H1("UD Makmur Jaya Putra");
         logo.addClassNames("text-l", "m-m");
 
         Button logout = new Button("Log out", e -> securityService.logout());
@@ -54,14 +54,17 @@ public class MainLayout extends AppLayout {
           new RouterLink("Pembelian", SupplierPurchaseOrderView.class),
           new RouterLink("Stock Barang", SupplierDeliveredOrderView.class),
           new RouterLink("Pembayaran", SupplierPaymentView.class),
+          new RouterLink("Shipping", ShippingView.class),
           new H2("Customers"),
           new RouterLink("Penjualan", CustomerPurchaseOrderView.class),
           new RouterLink("Pengiriman", CustomerDeliveredOrderView.class),
           new RouterLink("Pembayaran", PaymentView.class),
           new H2("ADMIN"),
           new RouterLink("Products", ProductView.class),
+          new RouterLink("All Contacts", ContactView.class),
           new RouterLink("Suppliers", SupplierView.class),
-          new RouterLink("Customers", CustomerView.class)
+          new RouterLink("Customers", CustomerView.class),
+          new RouterLink("Inventory", InventoryView.class)
         ));
 
 

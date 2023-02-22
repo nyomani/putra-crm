@@ -27,7 +27,7 @@ public class SupplierView extends AbstractListView<Contact> {
                 filters -> {
                     filters.add((root, query, cb) ->
                             cb.equal(root.<ContactType>get("contactType"), ContactType.SUPPLIER));
-                    return service.searchContacts(filters);
+                    return service.findAllContacts(filters);
                 });
         this.service = service;
     }

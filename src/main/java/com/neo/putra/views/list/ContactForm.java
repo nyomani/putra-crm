@@ -13,10 +13,11 @@ public class ContactForm extends AbstractForm<Contact> {
     EmailField email = new EmailField("Email");
     TextField telp = new TextField("Telp.");
     TextField taxId = new TextField("NPWP");
+    TextField nik = new TextField("NIK");
 
 
     public ContactForm() {
         super(new BeanValidationBinder(Contact.class));
-        add(name, firstName, lastName, address, email, telp, taxId, createButtonsLayout());
+        add(name, firstName, lastName, address, email, telp, taxId, nik, createButtonsLayout());
     }
 }

@@ -25,7 +25,7 @@ import static com.neo.putra.data.query.TransactionSpecification.*;
 
 @Component
 @Scope("prototype")
-@Route(value = "payments", layout = MainLayout.class)
+@Route(value = "customer-payments", layout = MainLayout.class)
 @PageTitle("Payment from customers | PT. Makmur Jaya")
 @PermitAll
 public class PaymentView extends AbstractListView<CustomerPayment> {
@@ -39,7 +39,7 @@ public class PaymentView extends AbstractListView<CustomerPayment> {
                 new PaymentForm(() -> crmService.findAllCustomerPurchaseOrders(null),
                                 () -> crmService.findAccounts(
                                         Arrays.asList(AccountSpecifications.hasContactType(ContactType.OWNER)))),
-                s -> crmService.searchPayments(s));
+                s -> crmService.findAllCustomerPayments(s));
         this.crmService = crmService;
 
         addFilter(new ColumnFilter<>(dateFilter, dateFilter::getValue, p -> hasDate(p)));
@@ -47,7 +47,7 @@ public class PaymentView extends AbstractListView<CustomerPayment> {
         addFilter(new ColumnFilter<>(clientFilter, clientFilter::getValue, p -> hasCustomerName(p)));
         List<Product> products = crmService.findAllProducts(null);
         brandFilter.setItems(products);
-        clientFilter.setItems(crmService.searchContacts(Arrays.asList(
+        clientFilter.setItems(crmService.findAllContacts(Arrays.asList(
                 (root, query, cb) -> cb.equal(root.<ContactType>get("contactType"), ContactType.CUSTOMER))));
         brandFilter.setItemLabelGenerator(p -> p == null ? "Not Selected" : p.getBrand());
         clientFilter.setItemLabelGenerator(c -> c == null ? "Not Selected" : c.getName());
@@ -92,11 +92,10 @@ public class PaymentView extends AbstractListView<CustomerPayment> {
         if (credit == null)
         {
             credit = new Transaction();
+            credit.setType(TransactionType.CREDIT);
+            credit.setTransactionLog(entity.getTransaction().getTransactionLog());
         }
-        credit.setType(TransactionType.CREDIT);
         credit.setNotes(entity.getTransaction().getNotes());
-        credit.setTransactionLog(entity.getTransaction().getTransactionLog());
-        entity.getTransaction().setType(TransactionType.DEBIT);
         entity.getTransaction().getTransactionLog().setDebit(entity.getPurchaseOrder().getContact().getAccount());
         crmService.save(entity);
         crmService.save(credit);
@@ -111,10 +110,9 @@ public class PaymentView extends AbstractListView<CustomerPayment> {
     protected CustomerPayment newEntity() {
         CustomerPayment payment = new CustomerPayment();
         Transaction debit = new Transaction();
-        Transaction credit = new Transaction();
+        debit.setType(TransactionType.DEBIT);
         TransactionLog log = new TransactionLog();
         debit.setTransactionLog(log);
-        credit.setTransactionLog(log);
         payment.setTransaction(debit);
         return payment;
     }

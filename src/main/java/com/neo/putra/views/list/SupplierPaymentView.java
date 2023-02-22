@@ -36,10 +36,10 @@ public class SupplierPaymentView extends AbstractListView<SupplierPayment> {
 
     public SupplierPaymentView(final CrmService crmService) {
         super("Payment", new Grid<>(SupplierPayment.class),
-                new SupplierPaymentForm(() -> crmService.searchSupplierPurchaseOrders(null),
+                new SupplierPaymentForm(() -> crmService.findAllSupplierPurchaseOrders(null),
                         () -> crmService.findAccounts(
                                 Arrays.asList(AccountSpecifications.hasContactType(ContactType.OWNER)))),
-                s -> crmService.searchSupllierPayments(s));
+                s -> crmService.findAllSupllierPayments(s));
         this.crmService = crmService;
 
         addFilter(new ColumnFilter<>(dateFilter, dateFilter::getValue, p -> hasDate(p)));
@@ -47,7 +47,7 @@ public class SupplierPaymentView extends AbstractListView<SupplierPayment> {
         addFilter(new ColumnFilter<>(clientFilter, clientFilter::getValue, p -> hasCustomerName(p)));
         List<Product> products = crmService.findAllProducts(null);
         brandFilter.setItems(products);
-        clientFilter.setItems(crmService.searchContacts(Arrays.asList(
+        clientFilter.setItems(crmService.findAllContacts(Arrays.asList(
                 (root, query, cb) -> cb.equal(root.<ContactType>get("contactType"), ContactType.SUPPLIER))));
         brandFilter.setItemLabelGenerator(p -> p == null ? "Not Selected" : p.getBrand());
         clientFilter.setItemLabelGenerator(c -> c == null ? "Not Selected" : c.getName());
@@ -74,7 +74,7 @@ public class SupplierPaymentView extends AbstractListView<SupplierPayment> {
                 .setTextAlign(ColumnTextAlign.END);
         grid.addColumn(p -> rupiah(p.getPurchaseOrder().getPurchaseQuantity() * p.getPurchaseOrder()
                 .getPurchasePrice())).setHeader("Jumlah").setTextAlign(ColumnTextAlign.END);
-        grid.addColumn(p -> p.getTransaction().getAccount().getName()).setHeader("Account");
+        grid.addColumn(p -> p.getTransaction().getTransactionLog().getDebit().getName()).setHeader("Account");
         grid.addColumn(p -> rupiah(p.getTransaction().getAmount().doubleValue())).setHeader("Pembayaran")
                 .setTextAlign(ColumnTextAlign.END);
     }
@@ -89,11 +89,10 @@ public class SupplierPaymentView extends AbstractListView<SupplierPayment> {
 
         if (debit == null) {
             debit = new Transaction();
+            debit.setType(TransactionType.DEBIT);
+            debit.setTransactionLog(entity.getTransaction().getTransactionLog());
         }
-        debit.setType(TransactionType.DEBIT);
         debit.setNotes(entity.getTransaction().getNotes());
-        debit.setTransactionLog(entity.getTransaction().getTransactionLog());
-        entity.getTransaction().setType(TransactionType.CREDIT);
         entity.getTransaction().getTransactionLog().setCredit(entity.getPurchaseOrder()
                 .getProduct().getSupplier().getAccount());
         crmService.save(entity);
@@ -108,12 +107,10 @@ public class SupplierPaymentView extends AbstractListView<SupplierPayment> {
     @Override
     protected SupplierPayment newEntity() {
         SupplierPayment payment = new SupplierPayment();
-        Transaction debit = new Transaction();
         Transaction credit = new Transaction();
         TransactionLog log = new TransactionLog();
-        debit.setTransactionLog(log);
         credit.setTransactionLog(log);
-        payment.setTransaction(debit);
+        payment.setTransaction(credit);
         return payment;
     }
 }

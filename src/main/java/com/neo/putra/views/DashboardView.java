@@ -2,13 +2,9 @@ package com.neo.putra.views;
 
 import com.neo.putra.data.service.CrmService;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.charts.Chart;
-import com.vaadin.flow.component.charts.model.ChartType;
-import com.vaadin.flow.component.charts.model.DataSeries;
-import com.vaadin.flow.component.charts.model.DataSeriesItem;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -16,7 +12,7 @@ import com.vaadin.flow.router.Route;
 import javax.annotation.security.PermitAll;
 
 @Route(value = "", layout = MainLayout.class)
-@PageTitle("Dashboard | PT Makmur Jaya")
+@PageTitle("Dashboard | UD Makmur Jaya Putra")
 @PermitAll
 public class DashboardView extends VerticalLayout {
     private final CrmService service;
@@ -30,18 +26,19 @@ public class DashboardView extends VerticalLayout {
 
     private Component getContactStats() {
         VerticalLayout layout = new VerticalLayout();
-        layout.add(todayProfitAndLoss());
+        layout.add(profile());
         layout.addClassNames("text-xl", "mt-m");
         return layout;
     }
 
-    private Component todayProfitAndLoss() {
+    private Component profile() {
         final VerticalLayout layout = new VerticalLayout();
-        H1 h1 = new H1("Keuntungan hari ini ");
-        H2 h2 = new H2(service.countContacts() + "");
+        H1 h1 = new H1("UD Makmur Jaya Putra ");
+        Paragraph para = new Paragraph("Distributor minyak dan gula terbesar di Balik Papan dengan kualitas " +
+                "dan harga terpercaya");
         layout.setAlignItems(Alignment.CENTER);
         layout.setJustifyContentMode(JustifyContentMode.CENTER);
-        layout.add(h1, h2);
+        layout.add(h1, para);
         return layout;
     }
 

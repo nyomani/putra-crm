@@ -55,9 +55,9 @@ public class CustomerAbstractOrderView extends AbstractListView<CustomerPurchase
         Map<String, Product> productNameMap = new HashMap<>();
         products.forEach(p -> productNameMap.put(p.getName(), p));
         productFilter.setItems(productNameMap.values());
-        clientFilter.setItems(service.searchContacts(Arrays.asList(
+        clientFilter.setItems(service.findAllContacts(Arrays.asList(
                 (root, query, cb) -> cb.equal(root.<ContactType>get("contactType"), ContactType.CUSTOMER))));
-        salesFilter.setItems(service.searchContacts(Arrays.asList(
+        salesFilter.setItems(service.findAllContacts(Arrays.asList(
                 (root, query, cb) -> cb.equal(root.<ContactType>get("contactType"), ContactType.SALES))));
         productFilter.setItemLabelGenerator(p -> p == null ? "Not Selected" : p.getName());
         brandFilter.setItemLabelGenerator(p -> p == null ? "Not Selected" : p.getBrand());
@@ -70,7 +70,7 @@ public class CustomerAbstractOrderView extends AbstractListView<CustomerPurchase
 
             }
             else {
-                productBrandList = service.searchProducts(
+                productBrandList = service.findAllProducts(
                         Arrays.asList(ProductSpecifications.hasName(v.getValue().getName())));
             }
             brandFilter.setItems(productBrandList);

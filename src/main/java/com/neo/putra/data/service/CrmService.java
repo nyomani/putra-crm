@@ -1,7 +1,6 @@
 package com.neo.putra.data.service;
 
 import com.neo.putra.data.OrderState;
-import com.neo.putra.data.TransactionType;
 import com.neo.putra.data.entity.*;
 import com.neo.putra.data.query.SupplierOrderSpecifications;
 import com.neo.putra.data.repository.*;
@@ -13,220 +12,260 @@ import java.util.List;
 
 @Service
 public class CrmService {
-    private ContactRepository contactRepository;
-    private ProductRepository productRepository;
-    private SupplierPurchaseOrderRepository supplierPurchaseOrderRepository;
-    private CustomerPurchaseOrderRepository customerPurchaseOrderRepository;
-    private CustomerPaymentRepository customerPaymentRepository;
-    private SupplierPaymentRepository supplierPaymentRepository;
-    private SupplierPaymentRepository supplierRepository;
-    private TransactionRepository transactionRepository;
-    private AccountRepository accountRepository;
-    private TransactionLogRepository transactionLogRepository;
-    private final SpecificationQueryBuilder<CustomerPurchaseOrder> customerOrderRepo;
-    private final SpecificationQueryBuilder<SupplierPurchaseOrder> supplierOrderRepo;
-    private final SpecificationQueryBuilder<Contact> contactRepo;
-    private final SpecificationQueryBuilder<Product> productRepo;
-    private final SpecificationQueryBuilder<CustomerPayment> customerPaymentRepo;
-    private final SpecificationQueryBuilder<Account> accountRepo;
-    private final SpecificationQueryBuilder<Transaction> transactionRepo;
-    private final SpecificationQueryBuilder<TransactionLog> transactionLogRepo;
-    private final SpecificationQueryBuilder<SupplierPayment> supplierPaymentRepo;
+    private DataAccess<Contact> contact;
+    private DataAccess<Product> product;
+    private DataAccess<SupplierPurchaseOrder> supplierPurchaseOrder;
+    private DataAccess<CustomerPurchaseOrder> customerPurchaseOrder;
+    private DataAccess<CustomerPayment> customerPayment;
+    private DataAccess<SupplierPayment> supplierPayment;
+    private DataAccess<Transaction> transaction;
+    private DataAccess<Account> account;
+    private DataAccess<TransactionLog> transactionLog;
+
+    private DataAccess<Inventory> inventory;
+    private DataAccess<Shipment> shipment;
+
     public CrmService(ContactRepository contactRepository, ProductRepository productRepository,
                       SupplierPurchaseOrderRepository supplierPurchaseOrderRepository,
                       CustomerPurchaseOrderRepository customerPurchaseOrderRepository,
                       CustomerPaymentRepository customerPaymentRepository,
                       SupplierPaymentRepository supplierPaymentRepository,
-                      SupplierPaymentRepository supplierRepository,
                       TransactionRepository transactionRepository,
                       AccountRepository accountRepository,
-                      TransactionLogRepository transactionLogRepository) {
-        this.contactRepository = contactRepository;
-        this.productRepository = productRepository;
-        this.supplierPurchaseOrderRepository = supplierPurchaseOrderRepository;
-        this.customerPurchaseOrderRepository = customerPurchaseOrderRepository;
-        this.customerPaymentRepository = customerPaymentRepository;
-        this.supplierPaymentRepository = supplierPaymentRepository;
-        this.supplierRepository = supplierRepository;
-        this.transactionRepository = transactionRepository;
-        this.accountRepository = accountRepository;
-        this.transactionLogRepository = transactionLogRepository;
-
-        this.customerOrderRepo = new SpecificationQueryBuilder<>(customerPurchaseOrderRepository);
-        this.supplierOrderRepo = new SpecificationQueryBuilder<>(supplierPurchaseOrderRepository);
-        this.contactRepo = new SpecificationQueryBuilder<>(contactRepository);
-        this.customerPaymentRepo = new SpecificationQueryBuilder<>(customerPaymentRepository);
-        this.productRepo = new SpecificationQueryBuilder<>(productRepository);
-        this.accountRepo = new SpecificationQueryBuilder<>(accountRepository);
-        this.transactionRepo = new SpecificationQueryBuilder<>(transactionRepository);
-        this.supplierPaymentRepo = new SpecificationQueryBuilder<>(supplierPaymentRepository);
-        this.transactionLogRepo = new SpecificationQueryBuilder<>(transactionLogRepository);
+                      TransactionLogRepository transactionLogRepository,
+                      InventoryRepository inventoryRepository,
+                      ShipmentRepository shipmentRepository) {
+        this.contact = new DataService<>(contactRepository);
+        this.product = new DataService<>(productRepository);
+        this.supplierPurchaseOrder = new DataService<>(supplierPurchaseOrderRepository);
+        this.customerPurchaseOrder = new DataService<>(customerPurchaseOrderRepository);
+        this.customerPayment = new DataService<>(customerPaymentRepository);
+        this.supplierPayment = new DataService<>(supplierPaymentRepository);
+        this.transaction = new DataService<>(transactionRepository);
+        this.account = new DataService<>(accountRepository);
+        this.transactionLog = new DataService<>(transactionLogRepository);
+        this.inventory = new DataService<>(inventoryRepository);
+        this.shipment = new DataService<>(shipmentRepository);
     }
 
-    public long countContacts() {
-        return contactRepository.count();
+    public void delete(Contact entity) {
+        contact.delete(entity);
     }
-
-    public void delete(Contact contact) {
-        contactRepository.delete(contact);
+    public void delete(Account entity) {
+        account.delete(entity);
     }
-    public void delete(Account account) {
-        accountRepository.delete(account);
+    public void delete(CustomerPayment entity) {
+        customerPayment.delete(entity);
     }
-    public void delete(CustomerPayment payment) {
-        customerPaymentRepository.delete(payment);
-    }
-    public void delete(SupplierPayment payment) {
-        supplierPaymentRepository.delete(payment);
+    public void delete(SupplierPayment entity) {
+        supplierPayment.delete(entity);
     }
 
     public void delete(final CustomerPurchaseOrder entity) {
-        customerPurchaseOrderRepository.delete(entity);
+        customerPurchaseOrder.delete(entity);
     }
 
     public void delete(final SupplierPurchaseOrder entity) {
-        supplierPurchaseOrderRepository.delete(entity);
+        supplierPurchaseOrder.delete(entity);
+    }
+
+    public void delete(Inventory entity) {
+        inventory.delete(entity);
+    }
+
+    public void delete(Shipment entity) {
+        shipment.delete(entity);
+    }
+
+
+    public void delete(Product entity) {
+        product.delete(entity);
+    }
+
+    public void delete(Transaction entity) {
+        transaction.delete(entity);
     }
 
     public void save(final CustomerPurchaseOrder entity) {
-        customerPurchaseOrderRepository.save(entity);
+        customerPurchaseOrder.save(entity);
     }
 
-    public Contact save(final Contact contact) {
-        if (contact == null) {
+    public Contact save(final Contact entity) {
+        if (entity == null) {
             System.err.println("Contact is null. Are you sure you have connected your form to the application?");
             return null;
         }
-        return contactRepository.save(contact);
+        return contact.save(entity);
     }
 
-    public Account save(final Account account) {
-        if (account == null) {
-            System.err.println("Contact is null. Are you sure you have connected your form to the application?");
+    public Account save(final Account entity) {
+        if (entity == null) {
+            System.err.println("Account is null. Are you sure you have connected your form to the application?");
             return null;
         }
-        return accountRepository.save(account);
+        return account.save(entity);
     }
 
-    public void save(final CustomerPayment payment) {
-        save(payment.getTransaction().getTransactionLog());
-        save(payment.getTransaction());
-        customerPaymentRepository.save(payment);
+    public void save(final CustomerPayment entity) {
+        save(entity.getTransaction().getTransactionLog());
+        save(entity.getTransaction());
+        customerPayment.save(entity);
     }
 
-    public void save(final SupplierPayment payment) {
-        save(payment.getTransaction().getTransactionLog());
-        save(payment.getTransaction());
-        supplierPaymentRepository.save(payment);
+    public void save(final SupplierPayment entity) {
+        save(entity.getTransaction().getTransactionLog());
+        save(entity.getTransaction());
+        supplierPayment.save(entity);
     }
 
-
-    public Transaction save(final Transaction transaction)
+    public Transaction save(final Transaction entity)
     {
-        return transactionRepository.save(transaction);
+        return transaction.save(entity);
     }
 
     public TransactionLog save(final TransactionLog entity)
     {
-        return transactionLogRepository.save(entity);
+        return transactionLog.save(entity);
     }
 
-    public List<CustomerPurchaseOrder> findAllCustomerPurchaseOrders(final String stringFilter) {
-
-        if (stringFilter == null || stringFilter.isEmpty()) {
-            return customerPurchaseOrderRepository.findAll();
-        } else {
-            return customerPurchaseOrderRepository.search(stringFilter);
-        }
+    public void save(Product entity) {
+        product.save(entity);
     }
 
-    public List<Product> findAllProducts(final String filter) {
-        if (filter == null || filter.isEmpty()) {
-            return productRepository.findAll();
-        } else {
-            return productRepository.search(filter);
-        }
+    public Inventory save(Inventory entity) {
+        return inventory.save(entity);
     }
 
-    public void save(Product product) {
-        productRepository.save(product);
-    }
-
-    public void delete(Product product) {
-        productRepository.delete(product);
-    }
-
-    public void delete(Transaction transaction) {
-        transactionRepository.delete(transaction);
-    }
-
-    public List<SupplierPurchaseOrder> findStocks() {
-        return supplierOrderRepo.findAll(Arrays.asList(SupplierOrderSpecifications.hasOrderState(OrderState.DO)));
+    public Shipment save(Shipment entity) {
+        return shipment.save(entity);
     }
 
 
-    public List<Contact> saveAllContact(final List<Contact> contacts) {
-        return contactRepository.saveAll(contacts);
+    public SupplierPurchaseOrder saveSupplierPurchaseOrder(SupplierPurchaseOrder entity) {
+
+        return supplierPurchaseOrder.save(entity);
     }
 
-    public List<Product> saveAllProducts(final List<Product> entities) {
-        return productRepository.saveAll(entities);
-    }
-
-    public void saveSupplierPurchaseOrder(SupplierPurchaseOrder entity) {
-
-        supplierPurchaseOrderRepository.save(entity);
-    }
-
-    public void saveCustomerPurchaseOrder(CustomerPurchaseOrder entity) {
-        customerPurchaseOrderRepository.save(entity);
-    }
-
-    public List<CustomerPurchaseOrder> searchCustomerPurchaseOrders(
-            final List<Specification<CustomerPurchaseOrder>> filters) {
-
-        return customerOrderRepo.findAll(filters);
-    }
-
-    public List<SupplierPurchaseOrder> searchSupplierPurchaseOrders(
-            final List<Specification<SupplierPurchaseOrder>> filters) {
-        return supplierOrderRepo.findAll(filters);
-    }
-
-    public List<CustomerPayment> searchPayments(final List<Specification<CustomerPayment>> filters) {
-        return customerPaymentRepo.findAll(filters);
-    }
-
-    public List<SupplierPayment> searchSupllierPayments(final List<Specification<SupplierPayment>> filters) {
-        return supplierPaymentRepo.findAll(filters);
-    }
-
-    public List<Product> searchProducts(final List<Specification<Product>> filters) {
-        return productRepo.findAll(filters);
-    }
-
-    public List<Contact> searchContacts(final List<Specification<Contact>> filters) {
-        return contactRepo.findAll(filters);
+    public CustomerPurchaseOrder saveCustomerPurchaseOrder(CustomerPurchaseOrder entity) {
+        return customerPurchaseOrder.save(entity);
     }
 
     public List<Account> saveAllAccounts(List<Account> accounts) {
-        return accountRepository.saveAll(accounts);
+        return account.saveAll(accounts);
     }
 
-    public List<Account> allAccounts() {
-        return accountRepository.findAll();
+    public List<Contact> saveAllContact(final List<Contact> entities) {
+        return contact.saveAll(entities);
+    }
+
+    public List<Product> saveAllProducts(final List<Product> entities) {
+        return product.saveAll(entities);
+    }
+
+    public List<Inventory> saveAll(List<Inventory> entities) {
+        return inventory.saveAll(entities);
+    }
+
+    public List<SupplierPurchaseOrder> findAllStocks() {
+        return supplierPurchaseOrder.findAll(Arrays.asList(SupplierOrderSpecifications.hasOrderState(OrderState.DO)));
+    }
+
+    public List<CustomerPurchaseOrder> findAllCustomerPurchaseOrders(
+            final List<Specification<CustomerPurchaseOrder>> filters) {
+
+        return customerPurchaseOrder.findAll(filters);
+    }
+
+    public List<SupplierPurchaseOrder> findAllSupplierPurchaseOrders(
+            final List<Specification<SupplierPurchaseOrder>> filters) {
+        return supplierPurchaseOrder.findAll(filters);
+    }
+
+    public List<CustomerPayment> findAllCustomerPayments(final List<Specification<CustomerPayment>> filters) {
+        return customerPayment.findAll(filters);
+    }
+
+    public List<SupplierPayment> findAllSupllierPayments(final List<Specification<SupplierPayment>> filters) {
+        return supplierPayment.findAll(filters);
+    }
+
+    public List<Product> findAllProducts(final List<Specification<Product>> filters) {
+        return product.findAll(filters);
+    }
+
+    public List<Contact> findAllContacts(final List<Specification<Contact>> filters) {
+        return contact.findAll(filters);
+    }
+
+
+    public List<Account> findAllAccounts() {
+        return account.findAll();
     }
 
     public List<Transaction> findAllTransaction(List<Specification<Transaction>> filters) {
-        return transactionRepo.findAll(filters);
+        return transaction.findAll(filters);
     }
 
     public List<Account> findAccounts(List<Specification<Account>> filter) {
-        return accountRepo.findAll(filter);
+        return account.findAll(filter);
     }
 
     public Transaction getTransaction(final Specification<Transaction> filter)
     {
-        return transactionRepo.findOne(filter);
+        return transaction.find(filter);
     }
+
+    public List<Inventory> findAllInventory(List<Specification<Inventory>> filter) {
+        return inventory.findAll(filter);
+    }
+
+    public List<Shipment> findAllShipments(List<Specification<Shipment>> filter) {
+        return shipment.findAll(filter);
+    }
+
+
+    public DataAccess<Contact> getContact() {
+        return contact;
+    }
+
+    public DataAccess<Product> getProduct() {
+        return product;
+    }
+
+    public DataAccess<SupplierPurchaseOrder> getSupplierPurchaseOrder() {
+        return supplierPurchaseOrder;
+    }
+
+    public DataAccess<CustomerPurchaseOrder> getCustomerPurchaseOrder() {
+        return customerPurchaseOrder;
+    }
+
+    public DataAccess<CustomerPayment> getCustomerPayment() {
+        return customerPayment;
+    }
+
+    public DataAccess<SupplierPayment> getSupplierPayment() {
+        return supplierPayment;
+    }
+
+    public DataAccess<Transaction> getTransaction() {
+        return transaction;
+    }
+
+    public DataAccess<Account> getAccount() {
+        return account;
+    }
+
+    public DataAccess<TransactionLog> getTransactionLog() {
+        return transactionLog;
+    }
+
+    public DataAccess<Inventory> getInventory() {
+        return inventory;
+    }
+
+    public DataAccess<Shipment> getShipment() {
+        return shipment;
+    }
+
 }

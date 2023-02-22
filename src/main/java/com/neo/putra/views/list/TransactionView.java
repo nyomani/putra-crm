@@ -1,8 +1,10 @@
 package com.neo.putra.views.list;
 
 import com.neo.putra.components.ColumnFilter;
+import com.neo.putra.data.TransactionType;
 import com.neo.putra.data.entity.Account;
 import com.neo.putra.data.entity.Transaction;
+import com.neo.putra.data.entity.TransactionLog;
 import com.neo.putra.data.service.CrmService;
 import com.neo.putra.views.MainLayout;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -16,8 +18,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.security.PermitAll;
 
-import static com.neo.putra.data.query.TransactionSpecification.hasAccount;
-import static com.neo.putra.data.query.TransactionSpecification.hasTransactionDate;
+import static com.neo.putra.data.query.TransactionSpecification.*;
 
 @Component
 @Scope("prototype")
@@ -28,17 +29,21 @@ public class TransactionView extends AbstractListView<Transaction> {
     final CrmService service;
     private final DatePicker dateFilter = new DatePicker("Tanggal Transaksi");
     private final ComboBox<Account> accountFilter = new ComboBox<>("Account");
+
+    private final TransferForm transferForm;
     public TransactionView(final CrmService service) {
         super("Tranksaksi", new Grid<>(Transaction.class),
-                new TransactionForm(service), specifications -> service.findAllTransaction(specifications));
+                new TransferForm(service.getAccount()), specifications -> service.findAllTransaction(specifications));
         this.service = service;
+        transferForm = new TransferForm(service.getAccount());
         addFilter(new ColumnFilter<>(dateFilter, dateFilter::getValue, p -> hasTransactionDate(p)));
         addFilter(new ColumnFilter<>(accountFilter, accountFilter::getValue, p -> hasAccount(p)));
-        accountFilter.setItems(service.allAccounts());
+        accountFilter.setItems(service.findAllAccounts());
         accountFilter.setItemLabelGenerator(a -> a.getName());
         accountFilter.addValueChangeListener(e -> updateList());
         dateFilter.addValueChangeListener(e -> updateList());
-        disableAddition();
+        accountFilter.setClearButtonVisible(true);
+        dateFilter.setClearButtonVisible(true);
     }
 
     @Override
@@ -57,18 +62,38 @@ public class TransactionView extends AbstractListView<Transaction> {
         grid.addColumn(t -> t.getNotes()).setHeader("Catatan");
     }
 
+
     @Override
     protected void save(Transaction entity) {
+        Transaction credit = null;
+        if (entity.getTransactionLog().getId() != null)
+        {
+            credit = service.getTransaction(havingTransactionLog(TransactionType.CREDIT,
+                    entity.getTransactionLog()));
+        }
 
+        if (credit == null)
+        {
+            credit = new Transaction();
+        }
+
+        credit.setType(TransactionType.CREDIT);
+        credit.setTransactionLog(entity.getTransactionLog());
+        service.save(entity.getTransactionLog());
+        service.save(credit);
+        service.save(entity);
     }
 
     @Override
     protected void delete(Transaction entity) {
-
     }
 
     @Override
     protected Transaction newEntity() {
-     return null;
+        Transaction debit = new Transaction();
+        debit.setType(TransactionType.DEBIT);
+        TransactionLog log = new TransactionLog();
+        debit.setTransactionLog(log);
+     return debit;
     }
 }

@@ -14,7 +14,7 @@ import javax.annotation.security.PermitAll;
 
 @Component
 @Scope("prototype")
-@Route(value = "supplierPurchaseOrders", layout = MainLayout.class)
+@Route(value = "supplier-purchase-orders", layout = MainLayout.class)
 @PageTitle("Supplier Purchase Orders | PT. Makmur Jaya")
 @PermitAll
 
@@ -22,7 +22,7 @@ public class SupplierPurchaseOrderView extends SupplierAbstractPurchaseOrderView
     private final CrmService service;
     public SupplierPurchaseOrderView(CrmService service) {
         super(service, "Purchased Order - PO",
-                s -> service.searchSupplierPurchaseOrders(s));
+                s -> service.findAllSupplierPurchaseOrders(s));
         this.service = service;
     }
 

@@ -33,7 +33,7 @@
     "@vaadin/email-field": "23.2.0",
     "@vaadin/field-base": "23.2.0",
     "@vaadin/field-highlighter": "23.2.0",
-    "@vaadin/flow-frontend": "./target/flow-frontend",
+    "@vaadin/flow-frontend": "./build/flow-frontend",
     "@vaadin/form-layout": "23.2.0",
     "@vaadin/grid": "23.2.0",
     "@vaadin/grid-pro": "23.2.0",
@@ -255,7 +255,8 @@
     "date-fns": "$date-fns",
     "@vaadin/multi-select-combo-box": "$@vaadin/multi-select-combo-box",
     "proj4": "$proj4",
-    "lumo-css-framework": "$lumo-css-framework"
+    "lumo-css-framework": "$lumo-css-framework",
+    "@vaadin/flow-frontend": "$@vaadin/flow-frontend"
   },
   "vaadin": {
     "dependencies": {
@@ -393,6 +394,6 @@
       "workbox-core": "6.5.0",
       "workbox-precaching": "6.5.0"
     },
-    "hash": "8db074e5393455a43e430f01e091328c4a3e50452aee3335380d1cea254a6d84"
+    "hash": "9009573634f7149aaeea78b622c4947d54b7c6f3a96b8027e0c7f580fded553f"
   }
 }

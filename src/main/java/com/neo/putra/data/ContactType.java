@@ -2,5 +2,5 @@ package com.neo.putra.data;
 
 public enum ContactType
 {
-    SUPPLIER, CUSTOMER, SALES, EMPLOYEE, OWNER
+    OWNER, SALES, EMPLOYEE, CONTRACTOR, SUPPLIER, CUSTOMER, SHIPPING
 }

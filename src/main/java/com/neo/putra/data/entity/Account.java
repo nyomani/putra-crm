@@ -1,10 +1,9 @@
 package com.neo.putra.data.entity;
 
 import com.neo.putra.data.AbstractEntity;
+import com.neo.putra.data.AccountType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import org.apache.commons.lang3.builder.HashCodeExclude;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -13,6 +12,7 @@ import javax.persistence.ManyToOne;
 @Entity
 @EqualsAndHashCode(exclude = {"contact"})
 public class Account extends AbstractEntity {
+    private AccountType type;
     @ManyToOne
     private Contact contact;
     private String name;

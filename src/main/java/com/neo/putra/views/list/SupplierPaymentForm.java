@@ -43,7 +43,7 @@ public class SupplierPaymentForm extends AbstractForm<SupplierPayment> {
                 (payment, notes) -> payment.getTransaction().setNotes(notes));
 
         source.setItems(accountProvider.get());
-        source.setItemLabelGenerator(a -> a.getName());
+        source.setItemLabelGenerator(a -> a.getName() + "-" + a.getAccountNumber());
         purchaseOrder.setItems(po.get());
         purchaseOrder.setItemLabelGenerator(p -> p.getProduct().getSupplier().getName() + "-" + p.getStockId());
         add(purchaseOrder,

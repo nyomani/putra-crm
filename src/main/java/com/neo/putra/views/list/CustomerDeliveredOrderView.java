@@ -12,7 +12,7 @@ import javax.annotation.security.PermitAll;
 
 @Component
 @Scope("prototype")
-@Route(value = "customerDeliveredOrders", layout = MainLayout.class)
+@Route(value = "customer-delivered-orders", layout = MainLayout.class)
 @PageTitle("Customer Deliverd Orders | PT. Makmur Jaya")
 @PermitAll
 
@@ -22,7 +22,7 @@ public class CustomerDeliveredOrderView extends CustomerAbstractOrderView {
                 filters -> {
                     filters.add((root, query, criteriaBuilder) ->
                             criteriaBuilder.equal(root.<OrderState>get("orderState"), OrderState.DO));
-                    return service.searchCustomerPurchaseOrders(filters);
+                    return service.findAllCustomerPurchaseOrders(filters);
                 });
         disableAddition();
     }
