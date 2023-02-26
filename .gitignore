@@ -3,10 +3,10 @@
 .settings
 .project
 .classpath
-
+.gradle
 *.iml
 .DS_Store
-
+build
 # The following files are generated/updated by vaadin-maven-plugin
 node_modules/
 frontend/generated/

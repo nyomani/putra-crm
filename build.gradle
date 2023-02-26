@@ -29,6 +29,7 @@ repositories {
 
 dependencies {
     implementation 'com.vaadin:vaadin:23.2.0'
+    implementation 'com.vaadin:flow-client:23.2.0'
     implementation 'com.vaadin:vaadin-spring-boot-starter:23.2.0'
     implementation 'org.vaadin.artur.exampledata:exampledata:3.4.0'
     implementation 'com.h2database:h2:2.1.214'
@@ -38,7 +39,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-devtools:2.7.3'
     implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
     implementation 'com.vaadin:vaadin-date-picker-flow:23.2.0'
-    implementation 'com.vaadin:vaadin-text-field-flow:23.2.0'
+    implementation 'org.vaadin:tinymce-for-flow:3.2.0'
+
     compileOnly 'org.projectlombok:lombok:1.18.24'
     annotationProcessor 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
@@ -47,9 +49,9 @@ dependencies {
     testImplementation 'io.github.bonigarcia:webdrivermanager:5.3.0'
 }
 
-group = 'com.neo.putra'
+group = 'com.neo.ppln'
 version = '1.0-SNAPSHOT'
-description = 'Makmur Jaya CRM'
+description = 'PPLN Chicago'
 java.sourceCompatibility = JavaVersion.VERSION_12
 
 publishing {
