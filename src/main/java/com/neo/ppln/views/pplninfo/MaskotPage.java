@@ -25,7 +25,7 @@ public class MaskotPage extends ArticleView{
     }
 
     @Override
-    protected void logo() {
+    protected void header() {
         StreamResource imageResource = new StreamResource("logo-sepasang-.png",
                 () -> getClass().getResourceAsStream("/images/logo-sepasang-.png"));
         Image image = new Image(imageResource, "Sura & Sulu - Maskot");

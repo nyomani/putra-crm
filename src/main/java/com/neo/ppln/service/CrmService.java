@@ -1,18 +1,13 @@
 package com.neo.ppln.service;
 
-import com.neo.ppln.entity.Document;
-import com.neo.ppln.entity.Page;
-import com.neo.ppln.entity.User;
-import com.neo.ppln.entity.Voter;
+import com.neo.ppln.entity.*;
+import com.neo.ppln.query.DocumentSpecifications;
 import com.neo.ppln.query.PageSpecifications;
 import com.neo.ppln.query.UserSpecifications;
 import com.neo.ppln.query.VoterSpecifications;
-import com.neo.ppln.repository.DocumentRepository;
-import com.neo.ppln.repository.PageRepository;
-import com.neo.ppln.repository.UserRepository;
-import com.neo.ppln.repository.VoterRepository;
+import com.neo.ppln.repository.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -21,20 +16,28 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class CrmService {
     private DataAccess<Voter> voterDataAccess;
     private DataAccess<Document> documentDataAccess;
     private DataAccess<Page> pageDataAccess;
+    private DataAccess<PageCategory> pageCategoriesDataAccess;
     private DataAccess<User> userDataAccess;
+    private DataAccess<SnailMail> snailMailDataAccess;
     private Map<String, String> fileMap = new HashMap<>();
     public CrmService(VoterRepository voterRepository,
                       DocumentRepository documentRepository,
                       PageRepository pageRepository,
-                      UserRepository userRepository) {
+                      UserRepository userRepository,
+                      CategoryRepository pageCategoryRepository,
+                      SnailMailRepository snailMailRepository) {
         this.voterDataAccess = new DataService<>(voterRepository);
         this.documentDataAccess = new DataService<>(documentRepository);
         this.pageDataAccess = new DataService<>(pageRepository);
         this.userDataAccess = new DataService<>(userRepository);
+        this.pageCategoriesDataAccess = new DataService<>(pageCategoryRepository);
+        this.snailMailDataAccess = new DataService<>(snailMailRepository);
+
         fileMap.put("Asas Pemilu", "asaspemilu.html");
         fileMap.put("Contact Us", "contact.html");
         fileMap.put("FAQ", "faq.html");
@@ -61,7 +64,15 @@ public class CrmService {
         pageDataAccess.delete(entity);
     }
 
+    public void delete(PageCategory entity) {
+        pageCategoriesDataAccess.delete(entity);
+    }
+
     public Voter save(final Voter entity) {
+        if (entity.getMailingStatus() == null) {
+            entity.setMailingStatus(new SnailMail());
+        }
+        snailMailDataAccess.save(entity.getMailingStatus());
         return voterDataAccess.save(entity);
     }
     public User save(final User entity) {
@@ -77,6 +88,9 @@ public class CrmService {
         return pageDataAccess.save(entity);
     }
 
+    public PageCategory save(final PageCategory entity) {
+        return pageCategoriesDataAccess.save(entity);
+    }
 
     public List<Voter> findAllVoter() {
         return voterDataAccess.findAll();
@@ -86,18 +100,34 @@ public class CrmService {
     }
 
     public List<Voter> findAllVoter(List<Specification<Voter>> filter) {
-        return voterDataAccess.findAll(filter);
+
+        long start = System.nanoTime();
+        List<Voter> all = voterDataAccess.findAll(filter);
+        log.info("Find all voters took {} nanos", System.nanoTime() - start );
+        return all;
     }
 
     public List<Document> findAllDocument() {
         return documentDataAccess.findAll();
     }
 
+    public List<Document> findDocument(final List<Specification<Document>> filter) {
+        return documentDataAccess.findAll(filter);
+    }
+
+    public List<Document> findDocumentWithUrl() {
+        return documentDataAccess.findAll(List.of(DocumentSpecifications.notNull()));
+    }
 
     public List<Voter> findVoter(
             final List<Specification<Voter>> filters) {
 
         return voterDataAccess.findAll(filters);
+    }
+
+    public Voter findVoterByPassport(String passport, String tglLahir) {
+        return voterDataAccess.find(List.of(VoterSpecifications.hasPassport(passport),
+                VoterSpecifications.hasTglLahir(tglLahir)));
     }
 
     public Voter findVoterByPassport(String passport) {
@@ -133,4 +163,11 @@ public class CrmService {
 
     }
 
- }
+    public List<PageCategory> findAllPageCategories() {
+        return pageCategoriesDataAccess.findAll();
+    }
+
+    public List<SnailMail> findAllSnailMail() {
+        return snailMailDataAccess.findAll();
+    }
+}

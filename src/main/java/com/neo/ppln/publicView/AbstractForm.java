@@ -14,15 +14,18 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.shared.Registration;
+import okhttp3.Call;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public abstract class AbstractForm<T> extends FormLayout {
     private T entity;
-    Binder<T> binder;
+    protected Binder<T> binder;
     Button save = new Button("Save");
-    Button delete = new Button("Delete");
+    protected Button delete = new Button("Delete");
     Button close = new Button("Cancel");
-
-    public AbstractForm(BeanValidationBinder<T> binder) {
+    public AbstractForm(Binder<T> binder) {
         addClassName("contact-form");
         this.binder = binder;
     }
@@ -39,7 +42,6 @@ public abstract class AbstractForm<T> extends FormLayout {
         delete.addClickListener(event -> fireEvent(new DeleteEvent(this)));
         close.addClickListener(event -> fireEvent(new CloseEvent(this)));
 
-
         binder.addStatusChangeListener(e -> save.setEnabled(binder.isValid()));
         binder.bindInstanceFields(this);
 
@@ -51,7 +53,7 @@ public abstract class AbstractForm<T> extends FormLayout {
         binder.readBean(entity);
     }
 
-    private void validateAndSave() {
+    protected void validateAndSave() {
         try {
             binder.writeBean(entity);
             fireEvent(new SaveEvent(this));

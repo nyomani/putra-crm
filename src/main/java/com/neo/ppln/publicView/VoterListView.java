@@ -1,6 +1,7 @@
 package com.neo.ppln.publicView;
 
 import com.neo.ppln.components.ColumnFilter;
+import com.neo.ppln.dataType.VotingMode;
 import com.neo.ppln.entity.Voter;
 import com.neo.ppln.service.CrmService;
 import com.neo.ppln.views.MainLayout;
@@ -12,6 +13,8 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+
 import static com.neo.ppln.query.VoterSpecifications.*;
 @Component
 @Scope("prototype")
@@ -20,21 +23,18 @@ import static com.neo.ppln.query.VoterSpecifications.*;
 @AnonymousAllowed
 public class VoterListView extends AbstractListView<Voter> {
     private final CrmService crmService;
-    private final TextField firstName = new TextField("First Name");
-    private final TextField lastNName = new TextField("Last Name");
-    private final TextField city = new TextField("City");
+    private final TextField name = new TextField("Nama");
+    private final TextField state = new TextField("State");
     private final TextField passport = new TextField("Passport");
 
     public VoterListView(final CrmService crmService) {
         super("Daftar Pemilih", new Grid<>(Voter.class), new VoterForm(crmService), s -> crmService.findAllVoter(s));
         this.crmService = crmService;
-        addFilter(new ColumnFilter<>(firstName, firstName::getValue, p -> hasFirstName(p)));
-        addFilter(new ColumnFilter<>(lastNName, lastNName::getValue, p -> hasLastName(p)));
-        addFilter(new ColumnFilter<>(city, city::getValue, p -> hasCity(p)));
+        addFilter(new ColumnFilter<>(name, name::getValue, p -> hasName(p)));
+        addFilter(new ColumnFilter<>(state, state::getValue, p -> hasState(p)));
         addFilter(new ColumnFilter<>(passport, passport::getValue, p -> hasPassport(p)));
-        firstName.addValueChangeListener(v -> updateList());
-        lastNName.addValueChangeListener(v -> updateList());
-        city.addValueChangeListener(v -> updateList());
+        name.addValueChangeListener(v -> updateList());
+        state.addValueChangeListener(v -> updateList());
         passport.addValueChangeListener(v -> updateList());
     }
 
@@ -43,14 +43,26 @@ public class VoterListView extends AbstractListView<Voter> {
         grid.addClassNames("voter-grid");
         grid.setSizeFull();
         grid.setColumns();
-        grid.addColumn(v -> v.getFirstName()).setHeader("First Name");
-        grid.addColumn(v -> v.getLastName()).setHeader("Last Name");
-        grid.addColumn(v -> v.getCity()).setHeader("City");
-        grid.addColumn(v -> v.getVotingMode().name()).setHeader("Metode Pemilihan");
+        grid.addColumn(v -> v.getNama()).setHeader("Nama").setSortable(true).setWidth("50%").setFlexGrow(0);
+        grid.addColumn(v -> v.getZipCode()).setHeader("Zip Code").setSortable(true).setResizable(true);
+        grid.addColumn(v -> v.getState()).setHeader("State").setSortable(true).setResizable(true);
+        grid.addColumn(v -> v.getMethode() == null ? "TPS": v.getMethode()).setHeader("Metode Pemilihan").setSortable(true).setAutoWidth(true);
     }
 
     @Override
     protected void save(Voter entity) {
+        if (entity != null && entity.getBirthDay() == null && entity.getTglLahir() != null)
+        {
+            try {
+                LocalDate localDate = LocalDate.parse(entity.getTglLahir(), dateFormat);
+                entity.setBirthDay(localDate);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+
         crmService.save(entity);
     }
 

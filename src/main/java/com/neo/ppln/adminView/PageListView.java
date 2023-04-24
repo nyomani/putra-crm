@@ -16,9 +16,8 @@ import javax.annotation.security.PermitAll;
 @Component
 @Scope("prototype")
 @Route(value = "admin-pages", layout = MainLayout.class)
-@PageTitle("Voter Registration | PPLN Chicago")
+@PageTitle("Page List | PPLN Chicago")
 @PermitAll
-
 public class PageListView extends AbstractListView<Page> {
     private CrmService crmService;
     public PageListView(CrmService crmService)
@@ -29,7 +28,12 @@ public class PageListView extends AbstractListView<Page> {
 
     @Override
     protected void configureGrid() {
-
+        grid.addClassNames("pages-grid");
+        grid.setSizeFull();
+        grid.setColumns();
+        grid.addColumn(v -> v.getTitle()).setHeader("Title");
+        grid.addColumn(v -> v.getPageIdx()).setHeader("Index");
+        grid.addColumn(v -> v.getPageCategory() == null ? "" : v.getPageCategory().getCategory()).setHeader("Category");
     }
 
     @Override

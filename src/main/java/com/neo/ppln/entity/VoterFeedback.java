@@ -13,6 +13,8 @@ public class VoterFeedback extends AbstractEntity {
     @ManyToOne
     private Voter voterData;
     private String reporter;
+    private String email;
+    private String telp;
     private String notes;
     private LocalDate reportDate;
     private LocalTime time;

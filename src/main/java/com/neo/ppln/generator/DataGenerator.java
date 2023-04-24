@@ -1,30 +1,36 @@
 package com.neo.ppln.generator;
 
+import com.neo.ppln.dataType.Gender;
+import com.neo.ppln.dataType.MarriageStatus;
 import com.neo.ppln.entity.Page;
 import com.neo.ppln.entity.User;
 import com.neo.ppln.entity.Voter;
 import com.neo.ppln.service.CrmService;
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 @SpringComponent
+@Slf4j
 public class DataGenerator {
     private final CrmService service;
     final Random r;
     int seed = 123;
-    Logger logger;
-
-    DataGenerator(final CrmService service)
+    final PasswordEncoder passwordEncoder;
+    DataGenerator(final CrmService service, final PasswordEncoder passwordEncoder)
     {
 
         this.service = service;
+        this.passwordEncoder = passwordEncoder;
         r = new Random(seed);
     }
 
@@ -38,13 +44,21 @@ public class DataGenerator {
             {
                 return;
             }
-            logger = LoggerFactory.getLogger(getClass());
+
+            List.of("Lea Hartono", "Given Tanri", "Martino Tangkar").forEach(s ->
+            {
+                User u = new User();
+                String[] name = s.split(" ");
+                u.setUserName(name[0]);
+                u.setFirstName(name[0]);
+                u.setLastName(name[1]);
+                u.setRole("PPLN");
+            });
             for (int i = 0; i <10; i ++)
             {
                 Voter p = new Voter();
-                p.setFirstName("First-"+i);
-                p.setLastName("Last-"+i);
-                p.setCity("Citi-"+i);
+                p.setNama("First-"+i +" Last-"+ i);
+                p.setState("ST-"+i);
                 p.setPassport("Passport-"+i);
                 service.save(p);
             }
@@ -77,7 +91,7 @@ public class DataGenerator {
             user.setRole("ADMIN");
             user.setPhone("2223");
             service.save(user);
-            logger.info("Generated demo data ");
+            log.info("Generated demo data ");
         };
     }
 

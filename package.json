@@ -8,6 +8,7 @@
     "@polymer/iron-meta": "3.0.1",
     "@polymer/iron-resizable-behavior": "3.0.1",
     "@polymer/polymer": "3.5.1",
+    "@vaadin-component-factory/vcf-pdf-viewer": "1.4.0",
     "@vaadin/accordion": "23.2.0",
     "@vaadin/app-layout": "23.2.0",
     "@vaadin/avatar": "23.2.0",
@@ -120,6 +121,7 @@
     "date-fns": "2.28.0",
     "lit": "^2.6.1",
     "lumo-css-framework": "^4.0.10",
+    "print-js": "1.6.0",
     "proj4": "2.8.0"
   },
   "devDependencies": {
@@ -255,8 +257,10 @@
     "lit": "$lit",
     "@polymer/polymer": "$@polymer/polymer",
     "date-fns": "$date-fns",
+    "proj4": "$proj4",
     "lumo-css-framework": "$lumo-css-framework",
-    "proj4": "$proj4"
+    "@vaadin-component-factory/vcf-pdf-viewer": "$@vaadin-component-factory/vcf-pdf-viewer",
+    "print-js": "$print-js"
   },
   "vaadin": {
     "dependencies": {
@@ -266,6 +270,7 @@
       "@polymer/iron-meta": "3.0.1",
       "@polymer/iron-resizable-behavior": "3.0.1",
       "@polymer/polymer": "3.5.1",
+      "@vaadin-component-factory/vcf-pdf-viewer": "1.4.0",
       "@vaadin/accordion": "23.2.0",
       "@vaadin/app-layout": "23.2.0",
       "@vaadin/avatar": "23.2.0",
@@ -377,6 +382,7 @@
       "date-fns": "2.28.0",
       "lit": "^2.6.1",
       "lumo-css-framework": "^4.0.10",
+      "print-js": "1.6.0",
       "proj4": "2.8.0"
     },
     "devDependencies": {
@@ -394,6 +400,6 @@
       "workbox-core": "6.5.0",
       "workbox-precaching": "6.5.0"
     },
-    "hash": "10204ceb9dd83702172c40b7752cdfa644237c826ef6323dcec3ebd0490e15f1"
+    "hash": "67865659be9f0c5be3cfa838c889b055f227910eaf6c7c57bf96c255cdec4539"
   }
 }

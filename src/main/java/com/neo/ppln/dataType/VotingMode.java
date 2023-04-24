@@ -1,7 +1,7 @@
 package com.neo.ppln.dataType;
 
 public enum VotingMode {
-    TPS("Hadir di TPSLN"), POS("Lewat Pos");
+    TPS("Hadir di TPSLN"), POS("Lewat Pos"), UNKNOWN("Belum Konfirmasi");
     String mode;
     VotingMode(String m)
     {

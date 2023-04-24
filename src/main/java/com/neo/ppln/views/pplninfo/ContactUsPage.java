@@ -1,5 +1,6 @@
 package com.neo.ppln.views.pplninfo;
 
+import com.neo.ppln.publicView.RegistrationView;
 import com.neo.ppln.security.SecurityService;
 import com.neo.ppln.service.CrmService;
 import com.neo.ppln.views.MainLayout;
@@ -21,20 +22,20 @@ import org.springframework.stereotype.Component;
 @AnonymousAllowed
 
 public class ContactUsPage extends ArticleView{
-
+    private CrmService crmService;
     public ContactUsPage(CrmService crmService, SecurityService securityService) {
         super(crmService, securityService, "Contact Us");
+        this.crmService = crmService;
     }
 
     @Override
-    protected void logo() {
+    protected void header() {
         StreamResource imageResource = new StreamResource("KPU_Logo.png",
-                () -> getClass().getResourceAsStream("/images/KPU_Logo.png"));
+                () -> getClass().getResourceAsStream("/images/ppln.jpg"));
         Image image = new Image(imageResource, "KPU");
         image.setWidth(200, Unit.PIXELS);
         image.setHeight(200, Unit.PIXELS);
         add(image);
         setHorizontalComponentAlignment(Alignment.CENTER,image);
-
     }
 }

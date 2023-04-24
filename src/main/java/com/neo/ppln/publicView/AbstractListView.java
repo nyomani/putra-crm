@@ -7,9 +7,12 @@ import com.neo.ppln.event.SaveEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.theme.lumo.Lumo;
+import com.vaadin.flow.theme.lumo.LumoIcon;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.text.NumberFormat;
@@ -24,14 +27,17 @@ import java.util.stream.Collectors;
 public abstract class AbstractListView<T> extends VerticalLayout {
     private static final NumberFormat IDR = NumberFormat.getCurrencyInstance(new Locale("ID", "IDN", "IDR"));
 
-    DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM/dd/YYYY");
+    DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy");
     protected Grid<T> grid;
     private List<ColumnFilter<T, Object>> filters = new ArrayList<>();
-    private HorizontalLayout toolbar = new HorizontalLayout();
+    protected HorizontalLayout toolbar = new HorizontalLayout();
     protected AbstractForm<T> form;
     protected Function<List<Specification<T>>, List<T>> contentProvider;
     Button addEntityButton;
-    FlexLayout content;
+    protected FlexLayout content;
+    private GridConfigurationPanel gridConfiguration;
+    private Button configButton = new Button();
+    private HorizontalLayout filterLayout = new HorizontalLayout();
     public AbstractListView(final String title,
                             final Grid<T> grid,
                             final AbstractForm<T> form,
@@ -48,22 +54,37 @@ public abstract class AbstractListView<T> extends VerticalLayout {
         form.addListener(SaveEvent.class, this::save);
         form.addListener(DeleteEvent.class, this::delete);
         form.addListener(CloseEvent.class, e -> closeEditor());
-
-        content = new FlexLayout(grid, form);
-        content.setFlexGrow(2, grid);
-        content.setFlexGrow(1, form);
-        content.setFlexShrink(0, form);
+        this.gridConfiguration = new GridConfigurationPanel<>(grid);
+        content = new FlexLayout(grid, form, gridConfiguration);
         content.addClassNames("content", "gap-m");
         content.setSizeFull();
         addEntityButton.addClickListener(click -> addEntity());
-        toolbar.add(addEntityButton);
+        HorizontalLayout configLayout = new HorizontalLayout();
+        configLayout.setWidthFull();
+        configLayout.add(configButton);
+        configLayout.setJustifyContentMode(JustifyContentMode.END);
+        configButton.setIcon(VaadinIcon.COG_O.create());
+        toolbar.add(addEntityButton, filterLayout, configLayout);
         toolbar.setAlignItems(Alignment.BASELINE);
+        toolbar.setFlexGrow(1.0, configLayout);
+        toolbar.setWidth("95%");;
         add(toolbar, content);
         updateList();
         closeEditor();
         grid.asSingleSelect().addValueChangeListener(event ->
                 edit(event.getValue()));
+        configButton.addClickListener(e -> {
+           gridConfiguration.setVisible(true);
+           grid.setVisible(false);
+        });
+        gridConfiguration.setVisible(false);
+        configureContent();
+        grid.addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT);
+    }
 
+    protected void configureContent() {
+        content.setFlexGrow(2, grid);
+        content.setFlexGrow(1, form);
     }
 
     String rupiah(double value) {
@@ -74,7 +95,7 @@ public abstract class AbstractListView<T> extends VerticalLayout {
 
     protected void addFilter(final ColumnFilter component) {
         filters.add(component);
-        toolbar.add(component);
+        filterLayout.add(component);
     }
 
     abstract protected void save(T entity);
@@ -99,6 +120,8 @@ public abstract class AbstractListView<T> extends VerticalLayout {
         } else {
             form.setEntity(entity);
             form.setVisible(true);
+            grid.setVisible(false);
+            toolbar.setVisible(false);
             addClassName("editing");
         }
     }
@@ -113,6 +136,8 @@ public abstract class AbstractListView<T> extends VerticalLayout {
     private void closeEditor() {
         form.setVisible(false);
         removeClassName("editing");
+        grid.setVisible(true);
+        toolbar.setVisible(true);
     }
 
     public void disableAddition() {
